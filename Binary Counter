@@ -1,0 +1,91 @@
+  // Ashley English,  30-Nov-2021 LED Matrix Binary Clock
+    // Used Mod to turn on columns in steps. 
+    // PROPOSED EDITS: Don't use high or low, only disable and enable; 
+ 
+
+// set the arduino pins associated with rows and columns
+const int MAXLROW = 8;
+const int MAXLCOL = 8;
+const int  lRow[MAXLROW] = {6, 7, 8, 9, 10, 11, 12, 13};  //ASSUMES NORTH (UP) is POSITIVE, origin at bottom
+const int  lCol[MAXLCOL] = {2, 3, 4, 5, A4, A3, A2, A1} ;      //ASSUMES EAST (RIGHT) IS POSITIVE, origin at right
+
+int i;
+int t=0;
+
+// define rows,    LOW = enabled,  HIGH = disabled 
+// define columns, LOW = disabled, HIGH = enabled
+#define ENABLE_LROW LOW
+#define ENABLE_LCOL HIGH
+
+#define DISABLE_LROW HIGH
+#define DISABLE_LCOL LOW
+
+
+void setup()
+{
+  // set led matrix row and column pins as OUTPUT
+  for (i=0; i<MAXLROW; i++) 
+  {
+    pinMode(lRow[i], OUTPUT);
+  }
+  for (i=0; i<MAXLCOL; i++) 
+  {
+    pinMode(lCol[i], OUTPUT);
+  }
+  
+ // initialize the columns to be completely 'OFF' and rows to be completely 'ON'
+  for (i=0; i<MAXLROW; i++)
+  {
+     digitalWrite(lRow[i], ENABLE_LROW);
+  }
+  for (i=0; i<MAXLCOL; i++) 
+  {
+     digitalWrite(lCol[i], DISABLE_LCOL);
+  }
+}
+
+
+void AllOff()
+{
+  //All columns off. Rows do not need to be turned off given that enabled or disabled makes no difference if column is disabled. 
+  for(i = 0; i<MAXLCOL; i++) digitalWrite(lCol[i], DISABLE_LCOL);
+}
+
+
+void loop()  // *** BINARY CLOCK/COUNTER  ***
+/*
+{
+  t = t + 1;
+  
+  digitalWrite(lCol[A1], HIGH);
+  
+  if(t%2 == 1)
+    digitalWrite(lCol[A2], HIGH);
+  
+  if(t%4 == 1)
+    digitalWrite(lCol[A3], HIGH);
+  
+  if(t%8 == 1)
+    digitalWrite(lCol[A4], HIGH);
+
+  if(t%16 == 1)
+    digitalWrite(lCol[2], HIGH);
+  
+  if(t%32 == 1)
+    digitalWrite(lCol[3], HIGH);
+  
+  if(t%64 == 1)
+    digitalWrite(lCol[4], HIGH);
+  
+  if(t%126 == 1)
+    digitalWrite(lCol[5], HIGH);
+  
+  delay(500);
+  AllOff();
+  delay(500);
+}
+*/ 
+{
+  digitalWrite(lCol[A1], ENABLE_LCOL);
+} 
+  
