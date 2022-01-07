@@ -1,0 +1,57 @@
+// Ashley English,  30-Nov-2021 LED Matrix Binary Clock
+
+// set the arduino pins associated with rows and columns
+const int MAXLROW = 8;
+const int MAXLCOL = 16;
+const int  lRow[MAXLROW] = {A15, A14, A13, A12, A11, A10, A9, A8};       
+const int  lCol[MAXLCOL] = {21, 20, 19, 18, 17, 16, 15, 14, 37, 39, 41, 43, 45, 47, 49, 51} ;      
+
+int i;
+uint16_t t =0;
+
+// define rows,    HIGH = enabled,  LOW = disabled 
+// define columns, HIGH = disabled, LOW = enabled
+#define ENABLE_LROW HIGH
+#define ENABLE_LCOL LOW
+
+#define DISABLE_LROW LOW
+#define DISABLE_LCOL HIGH
+
+void AllOff()
+{
+  //All columns off
+  for(i = 0; i<MAXLCOL; i++) digitalWrite(lCol[i], DISABLE_LCOL);
+  for(i = 0; i<MAXLROW; i++) digitalWrite(lRow[i], DISABLE_LROW);
+}
+void setup()
+{
+  // set led matrix row and column pins as OUTPUT
+  for (i=0; i<MAXLROW; i++) 
+  {
+    pinMode(lRow[i], OUTPUT);
+  }
+  for (i=0; i<MAXLCOL; i++) 
+  {
+    pinMode(lCol[i], OUTPUT);
+  }
+  Serial.begin(9600);
+  AllOff();
+}
+
+void loop()  // *** BINARY CLOCK/COUNTER  ***
+{
+  t = t + 1;
+  
+  
+  
+ for(i = 0; i<MAXLCOL; i++) 
+ {
+    digitalWrite(lCol[i], !bitRead(t, i));
+    Serial.print(bitRead(t,i));
+  }
+  
+  Serial.println(" ");
+  delay(250);
+  AllOff();
+ 
+}
