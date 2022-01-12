@@ -4,8 +4,7 @@
 const int MAXLROW = 8;
 const int MAXLCOL = 16;
 const int  lRow[MAXLROW] = {A15, A14, A13, A12, A11, A10, A9, A8};       
-const int  lCol[MAXLCOL] = {39, 41, 43, 45, 47, 49, 51, 53, 52, 50, 48, 46, 44, 42, 40, 38} ;      
-
+const int  lCol[MAXLCOL] = {39, 41, 43, 45, 47, 49, 51, 53, 52, 50, 48, 46, 44, 42, 40, 38}; 
 int i;
 uint32_t t =0;
 
@@ -34,7 +33,7 @@ void setup()
   {
     pinMode(lCol[i], OUTPUT);
   }
-  Serial.begin(9600);
+  Serial.begin(96000);
   AllOff();
 }
 
@@ -51,6 +50,6 @@ void loop()  // *** BINARY CLOCK/COUNTER  ***
   }
   
   Serial.println(" ");
-  delay(250);
-   
+  delay(0);
+     
 }
