@@ -1,4 +1,4 @@
-#include "mxapi.h"
+//#include "mxapi.h"
 #include "string.h" // This has strlen(), which is called in DisplayString().
 
 #define dRIGHT 0
@@ -11,17 +11,22 @@
 unsigned char* GetChar(char c);
 unsigned char dBar(unsigned char n);
 unsigned char dDot(unsigned char n);
+int pin0 = 0;
+int pin1 = 1;
+int pin2 = 2;
+int pin3 = 3;
+int pin4 = 4;
 
 // You wrote this.
 // I didn't modify it in any way.
-void DisplayColumn (ColNum, ColZero, ColValue, RevVideo, NumFlash, FlashDuration, BlanksPerFlash)
-  unsigned char ColNum;  // will be converted to Mod16, identifies column to be displayed       
-  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost             
-  unsigned char ColValue; // 8 bits, nth bit=1 enables nth row, LSB=>row0=>bottom of display    
-  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row  
-  unsigned NumFlash; // Number of times the control loop is run to display the column           
-  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
-  unsigned BlanksPerFlash; // for pwm brightness control,                                       
+void DisplayColumn (unsigned char ColNum, unsigned char ColZero, unsigned char ColValue, unsigned char RevVideo, unsigned NumFlash, unsigned FlashDuration, unsigned BlanksPerFlash)
+//  unsigned char ColNum;  // will be converted to Mod16, identifies column to be displayed       
+//  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost             
+//  unsigned char ColValue; // 8 bits, nth bit=1 enables nth row, LSB=>row0=>bottom of display    
+//  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row  
+//  unsigned NumFlash; // Number of times the control loop is run to display the column           
+//  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
+//  unsigned BlanksPerFlash; // for pwm brightness control,                                       
 {
   unsigned char ModColNum;  // The ColNum arg is converted to Mod 16, just in case                 
   unsigned char ColDisplay; // Actual pin values to be displayed                                   
@@ -29,20 +34,20 @@ void DisplayColumn (ColNum, ColZero, ColValue, RevVideo, NumFlash, FlashDuration
   
   ModColNum = ColNum % 16;
   if (ColZero == dLEFT) ModColNum = 15 - ModColNum;
-  PORTD = (1<<ModColNum)     ; // right hand side of board (LSB)                                   
-  PORTB = (1<<ModColNum) >> 8; // shift 8 bits to right to show left hand side of board (MSB)      
+  pin3 = (1<<ModColNum)     ; // right hand side of board (LSB)                                   
+  pin1 = (1<<ModColNum) >> 8; // shift 8 bits to right to show left hand side of board (MSB)      
   
   if (RevVideo) ColDisplay = ColValue;
   else ColDisplay = ~ColValue;
   
   for (i=0; i<NumFlash; i++) {
-    PORTA = ColDisplay & 0b00111111;  // clear top 2 bits                                         
-    PORTE = ColDisplay >> 6 & 0b00000011; // shift to high order then clear low 6                 
-    delay_ms(FlashDuration);
-    PORTA = 0b11111111;
-    PORTE = 0b11111111;
-    delay_ms(FlashDuration*BlanksPerFlash);
-    if (FlashDuration == 0) delay_ms(BlanksPerFlash);
+    pin0 = ColDisplay & 0b00111111;  // clear top 2 bits                                         
+    pin4 = ColDisplay >> 6 & 0b00000011; // shift to high order then clear low 6                 
+    delay(FlashDuration);
+    pin0 = 0b11111111;
+    pin4 = 0b11111111;
+    delay(FlashDuration*BlanksPerFlash);
+    if (FlashDuration == 0) delay(BlanksPerFlash);
   }
 }
 
@@ -229,17 +234,17 @@ unsigned char* GetChar(char c) {
 // can specify whether or not characters should "wrap around" the edges
 // and whether or not we should pause to accomodate for drawing off-screen.
 // Also, I allow you to draw any bitmap whose info can be accessed from GetChar().
-void DisplayChar (Char, xoffset, yoffset, ColZero, RevVideo, Wrap, Wait, NumFlash, FlashDuration, BlanksPerFlash)
-  char Char;     
-  unsigned xoffset;
-  unsigned yoffset;
-  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost                 
-  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row  
-  unsigned char Wrap; // whether or not we should wrap
-  unsigned char Wait; // whether or not we should pause to account for offscreen stuff
-  unsigned NumFlash; // Number of times the control loop is run to display the column           
-  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
-  unsigned BlanksPerFlash; // for pwm brightness control,                                       
+void DisplayChar (char Char, unsigned xoffset, unsigned yoffset, unsigned char ColZero, unsigned char RevVideo, unsigned char Wrap, unsigned char Wait, unsigned NumFlash, unsigned FlashDuration, unsigned BlanksPerFlash)
+//  char Char;     
+//  unsigned xoffset;
+//  unsigned yoffset;
+//  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost                 
+//  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row  
+//  unsigned char Wrap; // whether or not we should wrap
+//  unsigned char Wait; // whether or not we should pause to account for offscreen stuff
+//  unsigned NumFlash; // Number of times the control loop is run to display the column           
+//  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
+//  unsigned BlanksPerFlash; // for pwm brightness control,                                       
 {
   unsigned char ColDisplay[8]; // Actual pin values to be displayed
   unsigned char i;
@@ -248,7 +253,7 @@ void DisplayChar (Char, xoffset, yoffset, ColZero, RevVideo, Wrap, Wait, NumFlas
   for (i=1; i<=ColDisplay[0]; i++) {
     if (Wrap || i-1+xoffset < 16)
       DisplayColumn(i-1+xoffset, ColZero, ColDisplay[i], RevVideo, NumFlash, FlashDuration, BlanksPerFlash);
-    else if (Wait) delay_ms(NumFlash*FlashDuration*(1+BlanksPerFlash));
+    else if (Wait) delay(NumFlash*FlashDuration*(1+BlanksPerFlash));
   }
 }
 
@@ -265,26 +270,26 @@ void DisplayChar (Char, xoffset, yoffset, ColZero, RevVideo, Wrap, Wait, NumFlas
 // This function will always call DrawColumn() the same number of times, so the amount of time
 // it takes for this function to complete is essentially the same, since painting the columns
 // is the most expensive part of this function timewise.
-void DisplayString(Str, xoffset, yoffset, ColZero, RevVideo, NumFlash, FlashDuration, BlanksPerFlash)
-  unsigned char Str[]; // the string to display
-  int xoffset;
-  unsigned yoffset;
-  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost                 
-  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row
-  unsigned NumFlash; // Number of times the control loop is run to display the column           
-  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
-  unsigned BlanksPerFlash; // for pwm brightness control,
+void DisplayString(unsigned char* Str_arr, int xoffset, unsigned yoffset, unsigned char ColZero, unsigned char RevVideo, unsigned NumFlash, unsigned FlashDuration, unsigned BlanksPerFlash)
+//  unsigned char Str[]; // the string to display
+//  int xoffset;
+//  unsigned yoffset;
+//  unsigned char ColZero; // =0 if ColNum(0) is rightmost on display, =1 if leftmost                 
+//  unsigned char RevVideo; // if true, flips meaning of ColValue ... nth bit=1 disables nth row
+//  unsigned NumFlash; // Number of times the control loop is run to display the column           
+//  unsigned FlashDuration; // number of milliseconds to keep column displayed                    
+//  unsigned BlanksPerFlash; // for pwm brightness control,
 {
   unsigned char strLength; // the length of Str
   unsigned char values[16]; // a virtual canvas
   unsigned char charData[8]; // the current character we're looking at
   int i, j, place;
   
-  strLength = strlen(Str);
+  strLength = strlen(Str_arr);
   place = xoffset;
   for (i=0; i<16; i++) values[i] = 0;
   for (i=0; i<strLength; i++) {
-    for (j=0; j<8; j++) charData[j] = GetChar(Str[i])[j];
+    for (j=0; j<8; j++) charData[j] = GetChar(Str_arr[i])[j];
     for (j=0; j<charData[0]; j++) {
       if (place+j >=0 && place+j < 16) {
         values[place+j] = charData[j+1];
@@ -309,10 +314,16 @@ unsigned char dDot(unsigned char n) {
   else return 1 << n;
 }
 
-void main(void) {
-  int i;
-  char j;
-  unsigned char str[9] = "12345678";
+int i;
+char j;
+unsigned char str[9];
+byte TRISA;
+byte TRISB;
+byte TRISE;
+byte TRISD;
+void setup() {
+  // put your setup code here, to run once:
+  str[9] = "12345678";
   // The array cannot have more than 9 elements because otherwise the compiler will complain*
   // about not having enough memory.  If the string has nine characters, then the compiler
   // will give a warning about not having a null-terminated string.  I don't know if that
@@ -321,8 +332,11 @@ void main(void) {
   TRISB = 0x00;
   TRISE = 0x00;
   TRISD = 0x00;
-  while (1) {
-    for (i=16; i>=-54; i--) {
+}
+
+void loop() {
+  // put your main code here, to run repeatedly:
+  for (i=16; i>=-54; i--) {
       DisplayString(str, i, 1, dLEFT, dRV_OFF, 20, 1, 0); 
     }
     for (i=16; i>=-54; i--) {
@@ -359,5 +373,4 @@ void main(void) {
     for (i=16; i>-54; i--) {
       DisplayString(str, i, 1, dLEFT, dRV_OFF, 3, 20, 0); 
     }
-  }
 }
