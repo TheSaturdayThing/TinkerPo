@@ -8,13 +8,13 @@ const int  lCol[MAXLCOL] = {39, 41, 43, 45, 47, 49, 51, 53, 52, 50, 48, 46, 44, 
 int i;
 uint32_t t =0;
 
-// define rows,    HIGH = enabled,  LOW = disabled 
-// define columns, HIGH = disabled, LOW = enabled
-#define ENABLE_LROW HIGH
-#define ENABLE_LCOL LOW
+// define rows,    HIGH = disabled,  LOW = enabled because of PNP/NPN transistors
+// define columns, HIGH = enabled, LOW = disabled because of PNP/NPN transistors
+#define ENABLE_LROW LOW
+#define ENABLE_LCOL HIGH
 
-#define DISABLE_LROW LOW
-#define DISABLE_LCOL HIGH
+#define DISABLE_LROW HIGH
+#define DISABLE_LCOL LOW
 
 void AllOff()
 {
