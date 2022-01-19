@@ -105,6 +105,62 @@ void loop()  // *** RANDOM WALK WITH WRAP AROUND ON ALL SIDES  ***
     if      (c>15) c=0;
     else if (c<0) c=15;
   }
+   //NorthEast
+  else if (ranNum == 4)
+  {
+    c--;
+    c = c %16; 
+    east++;
+    if      (c>15) c=0;
+    else if (c<0) c=15;
+    r++; 
+    r = r %16;                    
+    north++;
+    if      (r>7) r=0;
+    else if (r<0) r=7;
+  }
+  //SouthEast
+  else if (ranNum == 5)
+  {
+    r--;
+    r = r %16; 
+    south++;
+    if    (r>7) r=0;
+    else if (r<0) r=7; 
+    c--;
+    c = c %16; 
+    east++;
+    if      (c>15) c=0;
+    else if (c<0) c=15;
+  }
+  //SouthWest
+  else if (ranNum == 6)
+  {
+    r--;
+    r = r %16; 
+    south++;
+    if    (r>7) r=0;
+    else if (r<0) r=7; 
+    c++;
+    c = c %16; 
+    west++;
+    if      (c>15) c=0;
+    else if (c<0) c=15;  
+  }
+  //NorthWest
+   if (ranNum == 7)
+  {
+    r++; 
+    r = r %16;                    
+    north++;
+    if      (r>7) r=0;
+    else if (r<0) r=7;
+    c++;
+    c = c %16; 
+    west++;
+    if      (c>15) c=0;
+    else if (c<0) c=15;
+  }  
   
   locationOn(r,c);
   delay(animationSpeed);
