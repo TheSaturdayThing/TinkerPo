@@ -11,6 +11,10 @@ Updates:
 
 LED Matrix Board 6.0 by Adam Gleitman
 
+16 digital outputs to set the 16 columns on the matrix to high or low. 
+High will forward bias the 3906 PNP transistors, thus connecting the led matrix’s external power source to a given column.  
+8 analog pins connected to the rows forward bias the 2222 NPN transistors, thus connecting a given pin to ground. 
+
 ![LED matrix board](https://github.com/TheSaturdayThing/TinkerPo/assets/4332426/ef6ec417-bc66-4de5-a4c1-18814f1c6f8f)
 
 Arduino Mega Board
